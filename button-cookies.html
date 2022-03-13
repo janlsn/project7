@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'/>
+        <title>Button and cookies</title>
+        
+        <script>
+            "use strict";
+            const $ = function(foo)
+            {
+                return document.getElementById(foo);
+            };
+            const createCookie = function(name, value, days)
+            {
+              let expires;
+              let samesite = "; sameSite=lax";
+              if (days)
+              {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+              }
+              else
+              {
+                expires = "";
+              }
+              document.cookie = name + "=" + value + expires + samesite + "; path=/"; // nml
+            };
+
+           const readCookie = function(name)
+           {
+             let nameEQ = name + "=";
+             let ca = document.cookie.split(";");
+             for (let i = 0; i < ca.length; i++)
+             {
+               let c = ca[i];
+               while (c.charAt(0) == " ")
+               {
+                 c = c.substring(1,c.length);
+               }
+               if (c.indexOf(nameEQ) == 0)
+               {
+                 $('text').textContent = c.substring(nameEQ.length, c.length);
+               }
+             }
+             return null;
+           };
+
+           const eraseCookie = function(name)
+           {
+             createCookie(name, "", -1);
+             $('text').textContent = "Cookien er slettet, hvis den altså eksisterede!";
+           }
+
+            const go = function ()
+            {
+                $('btn1').addEventListener('click', function(){
+                  createCookie("Username", 42, 1);
+                  });
+                $('btn2').addEventListener('click', function(){
+                  readCookie("Username");
+                  });
+                $('btn3').addEventListener('click', function(){
+                  eraseCookie("Username");
+                  });
+            };
+            window.addEventListener('load', go);
+        </script>
+    </head>
+    <body>
+        <h1 id="text">Her skrives indholdet af cookien!</h1>
+        <section>
+            <button id='btn1'>Create cookie</button>
+            <button id='btn2'>Read cookie</button>
+            <button id='btn3'>Delete cookie</button>
+        </section>
+    </body>
